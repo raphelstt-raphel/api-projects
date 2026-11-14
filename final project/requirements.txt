@@ -1,0 +1,7 @@
+flask
+pypdf
+python-pptx
+spacy
+reportlab
+werkzeug
+python-docx

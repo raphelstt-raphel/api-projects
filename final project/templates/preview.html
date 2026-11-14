@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Questions - Document Based Question Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .preview-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .section-title {
+            color: #4a90e2;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .question-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .options-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+
+        .options-list li {
+            padding: 0.25rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .options-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            color: #4a90e2;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .download-btn {
+            background-color: #2ecc71;
+        }
+
+        .download-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .back-btn {
+            background-color: #95a5a6;
+        }
+
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .answer-key {
+            font-size: 0.9em;
+            color: #27ae60;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Generated Questions Preview</h1>
+            <p>Review your questions before downloading the PDF.</p>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flashes">
+            {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="preview-container">
+            {% if questions %}
+            {% for category, items in questions.items() %}
+            {% if items %}
+            <h2 class="section-title">{{ category }}</h2>
+
+            {% if category == 'MCQs' %}
+            {% for q in items %}
+            <div class="question-item">
+                <div class="question-text"><strong>{{ loop.index }}. {{ q.question }}</strong></div>
+                <ul class="options-list">
+                    {% for option in q.options %}
+                    <li>{{ option }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="answer-key">Answer: {{ q.answer }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <ol>
+                {% for q in items %}
+                <li class="question-item">{{ q }}</li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <p>No questions generated.</p>
+            {% endif %}
+        </div>
+
+        <div class="buttons-container">
+            <a href="/" class="btn back-btn">Upload Again</a>
+            <a href="/download_pdf" class="btn download-btn">Download PDF</a>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Based Question Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Document Based Question Generator</h1>
+            <p>Upload your PDF or PPT to generate exam-style questions instantly.</p>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flashes">
+            {% for message in messages %}
+            <div class="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form action="/generate" method="post" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group file-upload">
+                <label for="documents" class="custom-file-upload">
+                    <i class="icon-upload"></i> Choose PDF / PPT (Max 5)
+                </label>
+                <input type="file" id="documents" name="documents" accept=".pdf, .pptx" multiple required
+                    onchange="updateFileNames()">
+                <div id="file-names" class="file-name">No files chosen</div>
+            </div>
+
+            <div class="form-group options">
+                <h3>Select Question Types:</h3>
+                <label class="checkbox-container">
+                    <input type="checkbox" name="question_types" value="mcq" checked>
+                    <span class="checkmark"></span>
+                    MCQs
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" name="question_types" value="5_mark" checked>
+                    <span class="checkmark"></span>
+                    5 Mark Questions (Processes)
+                </label>
+                <label class="checkbox-container">
+                    <input type="checkbox" name="question_types" value="8_mark" checked>
+                    <span class="checkmark"></span>
+                    8 Mark Questions (Topics/Types)
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">Generate Preview</button>
+        </form>
+    </div>
+
+    <script>
+        function updateFileNames() {
+            var input = document.getElementById('documents');
+            var fileNamesDiv = document.getElementById('file-names');
+
+            if (input.files && input.files.length > 0) {
+                if (input.files.length > 5) {
+                    alert("You can only upload a maximum of 5 files.");
+                    input.value = ""; // Clear the input
+                    fileNamesDiv.textContent = "No files chosen";
+                    fileNamesDiv.style.color = "#777";
+                    return;
+                }
+
+                var names = [];
+                for (var i = 0; i < input.files.length; i++) {
+                    names.push(input.files[i].name);
+                }
+                fileNamesDiv.textContent = names.join(', ');
+                fileNamesDiv.style.color = "#4a90e2";
+                fileNamesDiv.style.fontWeight = "600";
+            } else {
+                fileNamesDiv.textContent = "No files chosen";
+                fileNamesDiv.style.color = "#777";
+            }
+        }
+    </script>
+</body>
+
+</html>
